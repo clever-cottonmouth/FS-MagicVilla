@@ -83,17 +83,13 @@ namespace MagicVilla_VillaAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateVilla([FromBody] VillaDto createDto)
+        public async Task<IActionResult> CreateVilla([FromBody] VillaCreateDto createDto)
         {
             try
             {
                 if (createDto == null)
                 {
                     return BadRequest(createDto);
-                }
-                if (createDto.Id > 0)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError);
                 }
 
                 Villa villa = _mapper.Map<Villa>(createDto);
@@ -147,7 +143,7 @@ namespace MagicVilla_VillaAPI.Controllers
         }
 
         [HttpPut("{id:int}", Name = "UpdateVilla")]
-        public async Task<IActionResult> UpdateVilla(int id, [FromBody] VillaDto updateDto)
+        public async Task<IActionResult> UpdateVilla(int id, [FromBody] VillaUpdateDto updateDto)
         {
             try
             {
