@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MagicVilla_VillaAPI", "Magi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicVilla_Web", "MagicVilla_Web\MagicVilla_Web.csproj", "{9AE36280-0CD0-4B71-91F3-0365CC5EBAA0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicVilla_Utility", "MagicVilla_Utility\MagicVilla_Utility.csproj", "{6A6AAE24-3086-4083-97D4-3097417ADA8E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{9AE36280-0CD0-4B71-91F3-0365CC5EBAA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AE36280-0CD0-4B71-91F3-0365CC5EBAA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AE36280-0CD0-4B71-91F3-0365CC5EBAA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A6AAE24-3086-4083-97D4-3097417ADA8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A6AAE24-3086-4083-97D4-3097417ADA8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A6AAE24-3086-4083-97D4-3097417ADA8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A6AAE24-3086-4083-97D4-3097417ADA8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
