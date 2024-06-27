@@ -24,6 +24,21 @@ namespace MagicVilla_Web.Services
         {
             try
             {
+                if (apiRequest == null)
+                {
+                    throw new ArgumentNullException(nameof(apiRequest), "API request cannot be null.");
+                }
+
+                if (string.IsNullOrEmpty(apiRequest.Url))
+                {
+                    throw new ArgumentException("API request URL cannot be null or empty.", nameof(apiRequest.Url));
+                }
+
+                if (httpClient == null)
+                {
+                    throw new InvalidOperationException("HttpClient instance is not initialized.");
+                }
+
                 using (var client = httpClient.CreateClient("MagicAPI"))
                 {
                     HttpRequestMessage message = new HttpRequestMessage
@@ -54,12 +69,12 @@ namespace MagicVilla_Web.Services
                         message.Content = new StringContent(JsonConvert.SerializeObject(apiRequest.Data),
                                                             Encoding.UTF8,
                                                             "application/json");
-                    }
 
-                    // Set 'Content-Type' header correctly
-                    if (apiRequest.ApiType != SD.ApiType.GET)
-                    {
-                        message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                        // Set 'Content-Type' header correctly
+                        if (apiRequest.ApiType != SD.ApiType.GET)
+                        {
+                            message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                        }
                     }
 
                     // Send the request
@@ -86,6 +101,7 @@ namespace MagicVilla_Web.Services
                 return APIResponse;
             }
         }
+
 
     }
 }
