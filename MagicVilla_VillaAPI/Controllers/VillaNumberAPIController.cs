@@ -23,7 +23,7 @@ namespace MagicVilla_VillaAPI.Controllers
             _mapper = mapper;
             this._response = new();
             _villaNumberRepository = villaNumberRepository;
-            _villaRepository = villaRepository;
+            _villaRepository = villaRepository; 
         }
 
         [HttpGet]
