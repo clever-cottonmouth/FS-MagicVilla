@@ -2,6 +2,7 @@
 using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Models.Dto;
 using MagicVilla_VillaAPI.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -27,6 +28,7 @@ namespace MagicVilla_VillaAPI.Controllers
 
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetVillas()
         {
             try
@@ -51,6 +53,7 @@ namespace MagicVilla_VillaAPI.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [Authorize]
         public async Task<IActionResult> GetVilla(int id)
         {
             try
@@ -83,6 +86,7 @@ namespace MagicVilla_VillaAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles ="admin")]
         public async Task<IActionResult> CreateVilla([FromBody] VillaCreateDto createDto)
         {
             try
@@ -112,6 +116,7 @@ namespace MagicVilla_VillaAPI.Controllers
         }
 
         [HttpDelete("{id:int}", Name = "DeleteVilla")]
+        [Authorize(Roles = "custom")]
         public async Task<IActionResult> DeleteVilla(int id)
         {
             try

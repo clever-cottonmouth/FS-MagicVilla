@@ -41,7 +41,11 @@ namespace MagicVilla_VillaAPI.Repository
             );
             if (user == null) 
             {
-                return null;
+                return new LoginResponseDto()
+                {
+                    Token = "",
+                    User = null
+                };
             }
 
             //if user found generate token
