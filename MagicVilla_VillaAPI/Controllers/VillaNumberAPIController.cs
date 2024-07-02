@@ -83,7 +83,7 @@ namespace MagicVilla_VillaAPI.Controllers
 
         }
 
-        [Authorize(Roles = "admin")]
+       // [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> CreateVillaNumber([FromBody] VillaNumberCreateDto createDto)
         {
@@ -126,7 +126,7 @@ namespace MagicVilla_VillaAPI.Controllers
             }
 
         }
-        [Authorize(Roles = "admin")]
+       // [Authorize(Roles = "admin")]
         [HttpDelete("{id:int}", Name = "DeleteVillaNumber")]
         public async Task<IActionResult> DeleteVillaNumber(int id)
         {
@@ -157,7 +157,7 @@ namespace MagicVilla_VillaAPI.Controllers
                 return BadRequest(errorResponse);
             }
         }
-        [Authorize(Roles = "admin")]
+      //  [Authorize(Roles = "admin")]
         [HttpPut("{id:int}", Name = "UpdateVillaNumber")]
         public async Task<IActionResult> UpdateVillaNumber(int id, [FromBody] VillaNumberUpdateDto updateDto)
         {

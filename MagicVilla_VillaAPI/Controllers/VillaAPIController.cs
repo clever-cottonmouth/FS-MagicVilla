@@ -9,8 +9,10 @@ using System.Net;
 
 namespace MagicVilla_VillaAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     public class VillaAPIController : ControllerBase
     {
         public readonly ILogger<VillaAPIController> _logger;
@@ -25,10 +27,15 @@ namespace MagicVilla_VillaAPI.Controllers
             this._response = new();
         }
 
-
+        [HttpGet]
+        [MapToApiVersion("2.0")]
+        public IEnumerable<string> Get() 
+        {
+            return new string[] { "val1", "val2" };
+        }
 
         [HttpGet]
-
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetVillas()
         {
             try
@@ -85,7 +92,7 @@ namespace MagicVilla_VillaAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles ="admin")]
+      //  [Authorize(Roles ="admin")]
         public async Task<IActionResult> CreateVilla([FromBody] VillaCreateDto createDto)
         {
             try
@@ -115,7 +122,7 @@ namespace MagicVilla_VillaAPI.Controllers
         }
 
         [HttpDelete("{id:int}", Name = "DeleteVilla")]
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteVilla(int id)
         {
             try
