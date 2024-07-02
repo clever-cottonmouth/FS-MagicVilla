@@ -28,7 +28,8 @@ namespace MagicVilla_VillaAPI.Controllers
 
 
         [HttpGet]
-       // [MapToApiVersion("2.0")]
+        // [MapToApiVersion("2.0")]
+        [ResponseCache(Duration =30)]
         public async Task<IActionResult> GetVillas()
         {
             try
@@ -53,6 +54,7 @@ namespace MagicVilla_VillaAPI.Controllers
         }
 
         [HttpGet("{id:int}")]
+      //  [ResponseCache(Location =ResponseCacheLocation.None, NoStore =true)]
         public async Task<IActionResult> GetVilla(int id)
         {
             try
