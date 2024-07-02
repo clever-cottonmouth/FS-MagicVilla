@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace MagicVilla_VillaAPI.Controllers
+namespace MagicVilla_VillaAPI.Controllers.v2
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [ApiVersion("2.0")]
     public class VillaNumberAPIController : ControllerBase
     {
         public readonly ILogger<VillaNumberAPIController> _logger;
@@ -22,9 +23,9 @@ namespace MagicVilla_VillaAPI.Controllers
         {
             _logger = logger;
             _mapper = mapper;
-            this._response = new();
+            _response = new();
             _villaNumberRepository = villaNumberRepository;
-            _villaRepository = villaRepository; 
+            _villaRepository = villaRepository;
         }
 
         [HttpGet]
@@ -33,7 +34,7 @@ namespace MagicVilla_VillaAPI.Controllers
             try
             {
                 _logger.LogInformation("Getting all villas");
-                List<VillaNumber> villaNumberList = await _villaNumberRepository.GetAllAsync(includeProperties:"Villa");
+                List<VillaNumber> villaNumberList = await _villaNumberRepository.GetAllAsync(includeProperties: "Villa");
                 _response.Result = _mapper.Map<List<VillaNumberDto>>(villaNumberList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
@@ -83,7 +84,7 @@ namespace MagicVilla_VillaAPI.Controllers
 
         }
 
-       // [Authorize(Roles = "admin")]
+        // [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> CreateVillaNumber([FromBody] VillaNumberCreateDto createDto)
         {
@@ -98,13 +99,14 @@ namespace MagicVilla_VillaAPI.Controllers
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
 
-                if(await _villaNumberRepository.GetAsync(u=>u.VillaNo == createDto.VillaNo)!= null)
+                if (await _villaNumberRepository.GetAsync(u => u.VillaNo == createDto.VillaNo) != null)
                 {
                     ModelState.AddModelError("ErrorMessages", "Villa Number already Exists");
                     return BadRequest(ModelState);
                 }
 
-                if (await _villaRepository.GetAsync(u=>u.Id == createDto.VillaID)== null){
+                if (await _villaRepository.GetAsync(u => u.Id == createDto.VillaID) == null)
+                {
                     ModelState.AddModelError("ErrorMessages", "Villa ID is Invalid");
                 }
 
@@ -126,7 +128,7 @@ namespace MagicVilla_VillaAPI.Controllers
             }
 
         }
-       // [Authorize(Roles = "admin")]
+        // [Authorize(Roles = "admin")]
         [HttpDelete("{id:int}", Name = "DeleteVillaNumber")]
         public async Task<IActionResult> DeleteVillaNumber(int id)
         {
@@ -157,7 +159,7 @@ namespace MagicVilla_VillaAPI.Controllers
                 return BadRequest(errorResponse);
             }
         }
-      //  [Authorize(Roles = "admin")]
+        //  [Authorize(Roles = "admin")]
         [HttpPut("{id:int}", Name = "UpdateVillaNumber")]
         public async Task<IActionResult> UpdateVillaNumber(int id, [FromBody] VillaNumberUpdateDto updateDto)
         {

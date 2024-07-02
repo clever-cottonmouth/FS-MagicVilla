@@ -12,7 +12,6 @@ namespace MagicVilla_VillaAPI.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [ApiVersion("1.0")]
-    [ApiVersion("2.0")]
     public class VillaAPIController : ControllerBase
     {
         public readonly ILogger<VillaAPIController> _logger;
@@ -27,15 +26,9 @@ namespace MagicVilla_VillaAPI.Controllers
             this._response = new();
         }
 
-        [HttpGet]
-        [MapToApiVersion("2.0")]
-        public IEnumerable<string> Get() 
-        {
-            return new string[] { "val1", "val2" };
-        }
 
         [HttpGet]
-        [MapToApiVersion("1.0")]
+       // [MapToApiVersion("2.0")]
         public async Task<IActionResult> GetVillas()
         {
             try
