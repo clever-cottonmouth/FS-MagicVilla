@@ -80,6 +80,11 @@ namespace MagicVilla_Web.Services
                     // Send the request
                     HttpResponseMessage apiResponse = await client.SendAsync(message);
 
+                    if (!string.IsNullOrEmpty(apiRequest.Token))
+                    {
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiRequest.Token);
+                    }
+
                     // Handle response
                     apiResponse.EnsureSuccessStatusCode(); // Ensure success status code
 
