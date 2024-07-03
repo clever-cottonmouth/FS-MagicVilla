@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
+    <partial name="_Notification"/>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -27,17 +28,25 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Villa" asp-action="IndexVilla">Villa</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="VillaNumber" asp-action="IndexVillaNumber">Villa Number</a>
-                        </li>
+                                <div class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Manage
+                        </a>
 
+                        <ul class="dropdown-menu">
+                            <li><a class="nav-link text-dark" asp-area="" asp-controller="Villa" asp-action="IndexVilla">Villa</a></li>
+                            <li><a class="nav-link text-dark" asp-area="" asp-controller="VillaNumber" asp-action="IndexVillaNumber">Villa Number</a></li>
+                
+                        </ul>       
+                    </ul>
 
+                    
+                    </div>
+
+                    <ul class="navbar-nav">
                         @if (httpAcc.HttpContext.Session.GetString(SD.SessionToken) != null &&
-httpAcc.HttpContext.Session.GetString(SD.SessionToken).ToString().Length > 0
-)
+                        httpAcc.HttpContext.Session.GetString(SD.SessionToken).ToString().Length > 0
+                        )
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Logout">Logout</a>
@@ -52,6 +61,7 @@ httpAcc.HttpContext.Session.GetString(SD.SessionToken).ToString().Length > 0
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Register">Register</a>
                             </li>
                         }
+
                     </ul>
                 </div>
             </div>
@@ -70,7 +80,8 @@ httpAcc.HttpContext.Session.GetString(SD.SessionToken).ToString().Length > 0
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script> 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
