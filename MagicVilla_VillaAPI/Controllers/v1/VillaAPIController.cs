@@ -32,7 +32,7 @@ namespace MagicVilla_VillaAPI.Controllers
         // [MapToApiVersion("2.0")]
         //[ResponseCache(Duration =30)]
         public async Task<IActionResult> GetVillas([FromQuery(Name = "FilterOccupancy")] int? occupancy, [FromQuery] string? search,
-            int pageSize = 2, int pageNumber = 1
+            int pageSize = 0, int pageNumber = 1
             )
         {
             try
