@@ -106,8 +106,8 @@ namespace MagicVilla_VillaAPI.Controllers
         }
 
         [HttpPost]
-        //  [Authorize(Roles ="admin")]
-        public async Task<IActionResult> CreateVilla([FromBody] VillaCreateDto createDto)
+        [Authorize(Roles ="admin")]
+        public async Task<IActionResult> CreateVilla([FromForm] VillaCreateDto createDto)
         {
             try
             {
@@ -118,6 +118,39 @@ namespace MagicVilla_VillaAPI.Controllers
 
                 Villa villa = _mapper.Map<Villa>(createDto);
                 await _villaRepository.CreateAsync(villa);
+
+                if (createDto.Image != null) 
+                {
+                    string fileName = villa.Id + Path.GetExtension(createDto.Image.FileName);
+                    string filePath = @"wwwroot\ProductImage\"+ fileName;
+
+                    var directoryLocation= Path.Combine(Directory.GetCurrentDirectory(), filePath);
+
+                    FileInfo file = new FileInfo(directoryLocation);
+
+                    if (file.Exists) 
+                    {
+                        file.Delete();
+                    }
+
+                    using (var fileStream = new FileStream(directoryLocation, FileMode.Create))
+                    {
+                        createDto.Image.CopyTo(fileStream);
+                    }
+
+                    var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+                    villa.ImageUrl = baseUrl + "/ProductImage/" + fileName;
+                    villa.ImageLocalPath = filePath;
+
+                }
+                else
+                {
+                    villa.ImageUrl = "https://placehold.co/600x400";
+                }
+
+
+
+                await _villaRepository.UpdateAsync(villa);
                 _response.Result = _mapper.Map<VillaDto>(villa);
                 _response.StatusCode = HttpStatusCode.Created;
                 return CreatedAtRoute(new { id = villa.Id }, _response);
