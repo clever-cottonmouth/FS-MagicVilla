@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace MagicVilla_VillaAPI.Models.Dto
 {
-    public class LoginResponseDto
+    public class TokenDto
     {
-        public UserDto User { get; set; }
         public string Token { get; set; }
     }
 }
