@@ -20,56 +20,51 @@ namespace MagicVilla_Web.Services
             villaUrl = configuration.GetValue<string>("ServiceUrls:VillaAPI");
         }
 
-        public Task<T> CreateAsync<T>(VillaCreateDto dto, string token)
+        public Task<T> CreateAsync<T>(VillaCreateDto dto)
         {
             return SendAsync<T>(new ApiRequest()
             {
                 ApiType = SD.ApiType.POST,
                 Data = dto,
                 Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/villaAPI/",
-                Token = token,
                 ContentType = SD.ContentType.MultipartFormData,
             });
         }
 
-        public Task<T> DeleteAsync<T>(int id , string token)
+        public Task<T> DeleteAsync<T>(int id )
         {
             return SendAsync<T>(new ApiRequest()
             {
                 ApiType = SD.ApiType.DELETE,
-                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/villaAPI/" + id,
-                Token = token
+                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/villaAPI/" + id
             });
         }
 
-        public Task<T> GetAllAsync<T>(string token)
+        public Task<T> GetAllAsync<T>()
         {
             return SendAsync<T>(new ApiRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/VillaAPI/",
-                Token = token
+                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/VillaAPI/"
             });
         }
 
-        public Task<T> GetAsync<T>(int id, string token)
+        public Task<T> GetAsync<T>(int id)
         {
             return SendAsync<T>(new ApiRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/villaAPI/" + id,
-                Token = token
+                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/villaAPI/" + id
             });
         }
 
-        public Task<T> UpdateAsync<T>(VillaUpdateDto dto, string token)
+        public Task<T> UpdateAsync<T>(VillaUpdateDto dto)
         {
             return SendAsync<T>(new ApiRequest()
             {
                 ApiType = SD.ApiType.PUT,
                 Data = dto,
                 Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/villaAPI/" + dto.Id,
-                Token = token,
                 ContentType = SD.ContentType.MultipartFormData,
             });
         }
