@@ -1,4 +1,5 @@
-﻿using MagicVilla_VillaAPI.Models;
+﻿using Azure;
+using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Models.Dto;
 using MagicVilla_VillaAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
@@ -60,6 +61,32 @@ namespace MagicVilla_VillaAPI.Controllers
             _response.StatusCode= HttpStatusCode.OK;
             _response.IsSuccess = true;
             return Ok(_response);
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> GetNewTokenFromRefreshToken([FromBody] TokenDto tokenDto)
+        {
+            if (ModelState.IsValid) 
+            {
+                var tokenDtoResponse = await _userRepo.RefreshAccessToken(tokenDto);
+                if (tokenDtoResponse == null || string.IsNullOrEmpty(tokenDtoResponse.AccessToken)) 
+                {
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("Token Invalid");
+                    return BadRequest(_response);
+                }
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = tokenDto;
+                return Ok(_response);
+            }
+            else
+            {
+                _response.IsSuccess=false;
+                _response.Result = "Invalid Input";
+                return BadRequest(_response);
+            }           
         }
     }
 }

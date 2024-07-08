@@ -21,6 +21,7 @@ namespace MagicVilla_Web.Services
         public void ClearToken()
         {
             _contextAccessor.HttpContext?.Response.Cookies.Delete(SD.AccessToken);
+            _contextAccessor.HttpContext?.Response.Cookies.Delete(SD.RefreshToken);
         }
 
         public TokenDto? GetToken()
