@@ -30,7 +30,7 @@ namespace MagicVilla_Web.Services
                 ApiType = SD.ApiType.POST,
                 Data = objToCreate,
                 Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/UserAPI/login"
-            });
+            }, withBearer:false);
         }
 
         public async Task<T> RegisterAsync<T>(RegisterationRequestDto objToCreate)
@@ -40,7 +40,7 @@ namespace MagicVilla_Web.Services
                 ApiType = SD.ApiType.POST,
                 Data = objToCreate,
                 Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/UserAPI/register"
-            });
+            }, withBearer: false);
         }
     }
 }
