@@ -4,6 +4,7 @@ using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Models.Dto;
 using MagicVilla_VillaAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -125,9 +126,45 @@ namespace MagicVilla_VillaAPI.Repository
             return tokenStr;
         }
 
-        public Task<TokenDto> RefreshAccessToken(TokenDto tokenDto)
+        public async Task<TokenDto> RefreshAccessToken(TokenDto tokenDto)
         {
-            throw new NotImplementedException();
+            var existingRefreshToken = await _db.RefreshTokens.FirstOrDefaultAsync(u=>u.Refresh_Token == tokenDto.RefreshToken);
+            if (existingRefreshToken == null) 
+            {
+                return new TokenDto();
+            }
+            var accessTokenData = GetAccessTokenData(tokenDto.AccessToken);
+            if (!accessTokenData.isSuccessful || accessTokenData.userId != existingRefreshToken.UserId
+                || accessTokenData.tokenId != existingRefreshToken.JwtTokenId) 
+            {
+                existingRefreshToken.IsValid= false;
+                _db.SaveChanges();
+            }
+
+            if (existingRefreshToken.ExpiresAt < DateTime.UtcNow) 
+            {
+                existingRefreshToken.IsValid = false;
+                _db.SaveChanges();
+            }
+
+            var newRefreshToken = await CreateNewRefreshToken(existingRefreshToken.UserId, existingRefreshToken.JwtTokenId);
+
+            existingRefreshToken.IsValid = false;
+            _db.SaveChanges();
+
+            var applicationUser = _db.ApplicationUsers.FirstOrDefault(u=>u.Id == existingRefreshToken.UserId);
+            if (applicationUser == null) 
+            {
+                return new TokenDto();
+            }
+            var newAccessToken = await GetAccessToken(applicationUser, existingRefreshToken.JwtTokenId);
+
+            return new TokenDto()
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken,
+            };
+
         }
 
         private async Task<string> CreateNewRefreshToken(string userId, string tokenId)
