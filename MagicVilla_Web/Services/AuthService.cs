@@ -10,20 +10,22 @@ using System.Threading.Tasks;
 
 namespace MagicVilla_Web.Services
 {
-    public class AuthService : BaseService, IAuthService
+    public class AuthService :  IAuthService
     {
         private readonly IHttpClientFactory _clientFactory;
         private string villaUrl;
+        private readonly IBaseService _baseService;
 
-        public AuthService(IHttpClientFactory clientFactory, IConfiguration configuration) :base(clientFactory)
+        public AuthService(IHttpClientFactory clientFactory, IConfiguration configuration, IBaseService baseService) 
         {
             _clientFactory = clientFactory;
             villaUrl = configuration.GetValue<string>("ServiceUrls:VillaAPI");
+            _baseService = baseService;
         }
 
-        public Task<T> LoginAsync<T>(LoginRequestDto objToCreate)
+        public async Task<T> LoginAsync<T>(LoginRequestDto objToCreate)
         {
-            return SendAsync<T>(new ApiRequest()
+            return await _baseService.SendAsync<T>(new ApiRequest()
             {
                 ApiType = SD.ApiType.POST,
                 Data = objToCreate,
@@ -31,9 +33,9 @@ namespace MagicVilla_Web.Services
             });
         }
 
-        public Task<T> RegisterAsync<T>(RegisterationRequestDto objToCreate)
+        public async Task<T> RegisterAsync<T>(RegisterationRequestDto objToCreate)
         {
-            return SendAsync<T>(new ApiRequest()
+            return await _baseService.SendAsync<T>(new ApiRequest()
             {
                 ApiType = SD.ApiType.POST,
                 Data = objToCreate,

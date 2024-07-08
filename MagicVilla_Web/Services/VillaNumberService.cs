@@ -10,19 +10,21 @@ using System.Threading.Tasks;
 
 namespace MagicVilla_Web.Services
 {
-    public class VillaNumberService : BaseService, IVillaNumberService
+    public class VillaNumberService : IVillaNumberService
     {
         private readonly IHttpClientFactory _clientFactory;
         private string villaUrl;
-        public VillaNumberService(IHttpClientFactory clientFactory, IConfiguration configuration) : base(clientFactory)
+        private readonly IBaseService _baseService;
+        public VillaNumberService(IHttpClientFactory clientFactory, IConfiguration configuration, IBaseService baseService = null) 
         {
             _clientFactory = clientFactory;
             villaUrl = configuration.GetValue<string>("ServiceUrls:VillaAPI");
+            _baseService = baseService;
         }
 
-        public Task<T> CreateAsync<T>(VillaNumberCreateDto dto)
+        public async Task<T> CreateAsync<T>(VillaNumberCreateDto dto)
         {
-            return SendAsync<T>(new ApiRequest()
+            return await _baseService.SendAsync<T>(new ApiRequest()
             {
                 ApiType = SD.ApiType.POST,
                 Data = dto,
@@ -30,36 +32,36 @@ namespace MagicVilla_Web.Services
             });
         }
 
-        public Task<T> DeleteAsync<T>(int id)
+        public async Task<T> DeleteAsync<T>(int id)
         {
-            return SendAsync<T>(new ApiRequest()
+            return await _baseService.SendAsync<T>(new ApiRequest()
             {
                 ApiType = SD.ApiType.DELETE,
                 Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/villaNumberAPI/" + id
             });
         }
 
-        public Task<T> GetAllAsync<T>()
+        public async Task<T> GetAllAsync<T>()
         {
-            return SendAsync<T>(new ApiRequest()
+            return await _baseService.SendAsync<T>(new ApiRequest()
             {
                 ApiType = SD.ApiType.GET,
                 Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/villaNumberAPI/"
             });
         }
 
-        public Task<T> GetAsync<T>(int id)
+        public async Task<T> GetAsync<T>(int id)
         {
-            return SendAsync<T>(new ApiRequest()
+            return await _baseService.SendAsync<T>(new ApiRequest()
             {
                 ApiType = SD.ApiType.GET,
                 Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/villaNumberAPI/" + id
             });
         }
 
-        public Task<T> UpdateAsync<T>(VillaNumberUpdateDto dto)
+        public async Task<T> UpdateAsync<T>(VillaNumberUpdateDto dto)
         {
-            return SendAsync<T>(new ApiRequest()
+            return await _baseService.SendAsync<T>(new ApiRequest()
             {
                 ApiType = SD.ApiType.PUT,
                 Data = dto,
