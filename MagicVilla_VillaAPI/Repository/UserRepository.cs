@@ -50,7 +50,7 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 return new TokenDto()
                 {
-                    Token = "",
+                    AccessToken = "",
                 };
             }
 
@@ -73,7 +73,7 @@ namespace MagicVilla_VillaAPI.Repository
             var token = tokenHandler.CreateToken(tokenDescriptor);
             TokenDto tokenDto = new TokenDto()
             {
-                Token = tokenHandler.WriteToken(token),
+                AccessToken = tokenHandler.WriteToken(token),
             };
             return tokenDto;
         }

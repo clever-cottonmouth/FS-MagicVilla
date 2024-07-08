@@ -9,6 +9,6 @@ namespace MagicVilla_VillaAPI.Models.Dto
 {
     public class TokenDto
     {
-        public string Token { get; set; }
+        public string AccessToken { get; set; }
     }
 }
