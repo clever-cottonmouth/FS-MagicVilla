@@ -139,12 +139,29 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 existingRefreshToken.IsValid= false;
                 _db.SaveChanges();
+                return new TokenDto();
+            }
+
+            if (!existingRefreshToken.IsValid)
+            {
+                var chainRecords = _db.RefreshTokens.Where(u => u.UserId == existingRefreshToken.UserId
+                && u.JwtTokenId == existingRefreshToken.JwtTokenId
+                );
+
+                foreach (var item in chainRecords)
+                {
+                    item.IsValid = false;
+                }
+                _db.UpdateRange(chainRecords);
+                _db.SaveChanges();
+                return new TokenDto();
             }
 
             if (existingRefreshToken.ExpiresAt < DateTime.UtcNow) 
             {
                 existingRefreshToken.IsValid = false;
                 _db.SaveChanges();
+                return new TokenDto();
             }
 
             var newRefreshToken = await CreateNewRefreshToken(existingRefreshToken.UserId, existingRefreshToken.JwtTokenId);
