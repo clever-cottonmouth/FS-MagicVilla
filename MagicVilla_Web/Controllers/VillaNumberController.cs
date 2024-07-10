@@ -67,6 +67,11 @@ namespace MagicVilla_Web.Controllers
                 {
                     return RedirectToAction(nameof(IndexVillaNumber));
                 }
+                else
+                {
+                    TempData["error"] = (response.ErrorMessages != null && response.ErrorMessages.Count > 0) ?
+                        response.ErrorMessages[0] : "Error Encountered";
+                }
             }
 
 
@@ -105,6 +110,11 @@ namespace MagicVilla_Web.Controllers
                     });
                 return View(villaNumberVM);
             }
+            else
+            {
+                TempData["error"] = (response.ErrorMessages != null && response.ErrorMessages.Count > 0) ?
+                    response.ErrorMessages[0] : "Error Encountered";
+            }
 
             return NotFound();
         }
@@ -120,6 +130,11 @@ namespace MagicVilla_Web.Controllers
                 if (response != null && response.IsSuccess)
                 {
                     return RedirectToAction(nameof(IndexVillaNumber));
+                }
+                else
+                {
+                    TempData["error"] = (response.ErrorMessages != null && response.ErrorMessages.Count > 0) ?
+                        response.ErrorMessages[0] : "Error Encountered";
                 }
             }
 
@@ -172,6 +187,11 @@ namespace MagicVilla_Web.Controllers
             if (response != null && response.IsSuccess)
             {
                 return RedirectToAction(nameof(IndexVillaNumber));
+            }
+            else
+            {
+                TempData["error"] = (response.ErrorMessages != null && response.ErrorMessages.Count > 0) ?
+                    response.ErrorMessages[0] : "Error Encountered";
             }
             return View(model);
         }
