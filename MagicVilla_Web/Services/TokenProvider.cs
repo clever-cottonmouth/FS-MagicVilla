@@ -37,7 +37,7 @@ namespace MagicVilla_Web.Services
                 };
                 return hasAccessToken ? tokenDto : null;
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
                 return null;

@@ -54,11 +54,11 @@ namespace MagicVilla_Web.Services
                     }
                     message.RequestUri = new Uri(apiRequest.Url);
 
-                    if (withBearer && _tokenProvider.GetToken() != null)
-                    {
-                        var token = _tokenProvider.GetToken();
-                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
-                    }
+                    //if (withBearer && _tokenProvider.GetToken() != null)
+                    //{
+                    //    var token = _tokenProvider.GetToken();
+                    //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+                    //}
 
 
                     if (apiRequest.ContentType == ContentType.MultipartFormData)
@@ -113,36 +113,52 @@ namespace MagicVilla_Web.Services
                     return message;
                 };
 
-                HttpResponseMessage apiResponse = null;
+                HttpResponseMessage httpResponseMessage = null;
 
-                if (!string.IsNullOrEmpty(apiRequest.Token))
+                //if (!string.IsNullOrEmpty(apiRequest.Token))
+                //{
+                //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiRequest.Token);
+                //}
+
+                httpResponseMessage = await SendWithRefreshTokenAsync(client, messageFactory, withBearer);
+
+                APIResponse FinalApiResponse = new()
                 {
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiRequest.Token);
-                }
+                    IsSuccess = false,
+                };
 
-                apiResponse = await SendWithRefreshTokenAsync(client, messageFactory, withBearer);
-
-                var apiContent = await apiResponse.Content.ReadAsStringAsync();
+                //var apiContent = await apiResponse.Content.ReadAsStringAsync();
                 try
                 {
-                    APIResponse ApiResponse = JsonConvert.DeserializeObject<APIResponse>(apiContent);
-                    if (ApiResponse != null && (apiResponse.StatusCode == System.Net.HttpStatusCode.BadRequest
-                        || apiResponse.StatusCode == System.Net.HttpStatusCode.NotFound))
+                    switch (httpResponseMessage.StatusCode)
                     {
-                        ApiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                        ApiResponse.IsSuccess = false;
-                        var res = JsonConvert.SerializeObject(ApiResponse);
-                        var returnObj = JsonConvert.DeserializeObject<T>(res);
-                        return returnObj;
-                    }
+                        case HttpStatusCode.NotFound:
+                            FinalApiResponse.ErrorMessages = new List<string>() { "Not Found" };
+                            break;
+                        case HttpStatusCode.Forbidden:
+                            FinalApiResponse.ErrorMessages = new List<string>() { "Access Denied" };
+                            break;
+                        case HttpStatusCode.Unauthorized:
+                            FinalApiResponse.ErrorMessages = new List<string>() { "Unauthorized" };
+                            break;
+                        case HttpStatusCode.InternalServerError:
+                            FinalApiResponse.ErrorMessages = new List<string>() { "Internal Server Error" };
+                            break;
+                        default :
+                            var apiContent = await httpResponseMessage.Content.ReadAsStringAsync();
+                            FinalApiResponse.IsSuccess = true;
+                            FinalApiResponse = JsonConvert.DeserializeObject<APIResponse>(apiContent);
+                            break;
+                    }         
+                    
                 }
                 catch (Exception e)
                 {
-                    var exceptionResponse = JsonConvert.DeserializeObject<T>(apiContent);
-                    return exceptionResponse;
+                    FinalApiResponse.ErrorMessages = new List<string>() { "Error Encountered", e.Message.ToString() };
                 }
-                var APIResponse = JsonConvert.DeserializeObject<T>(apiContent);
-                return APIResponse;
+                var res = JsonConvert.SerializeObject(FinalApiResponse);
+                var returnObj = JsonConvert.DeserializeObject<T>(res);
+                return returnObj;
 
             }
             catch (Exception e)
@@ -180,6 +196,7 @@ namespace MagicVilla_Web.Services
                     {
                         return response;
                     }
+                    
                     if(!response.IsSuccessStatusCode && response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         await InvokeRefreshTokenEndpoint(httpClient, tokenDto.AccessToken, tokenDto.RefreshToken);
@@ -188,6 +205,7 @@ namespace MagicVilla_Web.Services
                     }
                     return response;
                 }
+
                 catch (HttpRequestException httpRequestException)
                 {
                     if (httpRequestException.StatusCode == HttpStatusCode.Unauthorized)
@@ -219,10 +237,11 @@ namespace MagicVilla_Web.Services
             var content = await response.Content.ReadAsStringAsync();
             var apiResponse = JsonConvert.DeserializeObject<APIResponse>(content);
 
-            if (apiResponse?.IsSuccess != null)
+            if (apiResponse?.IsSuccess != true)
             {
                 await _contextAccessor.HttpContext.SignOutAsync();
                 _tokenProvider.ClearToken();
+               
             }
             else
             {
