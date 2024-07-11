@@ -152,6 +152,10 @@ namespace MagicVilla_Web.Services
                     }         
                     
                 }
+                catch (AuthException ae)
+                {
+                    throw;
+                }
                 catch (Exception e)
                 {
                     FinalApiResponse.ErrorMessages = new List<string>() { "Error Encountered", e.Message.ToString() };
@@ -205,6 +209,10 @@ namespace MagicVilla_Web.Services
                     }
                     return response;
                 }
+                catch (AuthException ae)
+                {
+                    throw;
+                }
 
                 catch (HttpRequestException httpRequestException)
                 {
@@ -241,7 +249,7 @@ namespace MagicVilla_Web.Services
             {
                 await _contextAccessor.HttpContext.SignOutAsync();
                 _tokenProvider.ClearToken();
-               
+                throw new AuthException();
             }
             else
             {
