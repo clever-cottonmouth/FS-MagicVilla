@@ -1,4 +1,5 @@
 ﻿using MagicVilla_Utility;
+using MagicVilla_VillaAPI.Models.Dto;
 using MagicVilla_Web.Models;
 using MagicVilla_Web.Models.Dto;
 using MagicVilla_Web.Services.IServices;
@@ -10,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace MagicVilla_Web.Services
 {
-    public class AuthService :  IAuthService
+    public class AuthService : IAuthService
     {
         private readonly IHttpClientFactory _clientFactory;
         private string villaUrl;
         private readonly IBaseService _baseService;
 
-        public AuthService(IHttpClientFactory clientFactory, IConfiguration configuration, IBaseService baseService) 
+        public AuthService(IHttpClientFactory clientFactory, IConfiguration configuration, IBaseService baseService)
         {
             _clientFactory = clientFactory;
             villaUrl = configuration.GetValue<string>("ServiceUrls:VillaAPI");
@@ -30,7 +31,7 @@ namespace MagicVilla_Web.Services
                 ApiType = SD.ApiType.POST,
                 Data = objToCreate,
                 Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/UserAPI/login"
-            }, withBearer:false);
+            }, withBearer: false);
         }
 
         public async Task<T> RegisterAsync<T>(RegisterationRequestDto objToCreate)
@@ -41,6 +42,16 @@ namespace MagicVilla_Web.Services
                 Data = objToCreate,
                 Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/UserAPI/register"
             }, withBearer: false);
+        }
+
+        public async Task<T> LogoutAsync<T>(TokenDto obj)
+        {
+            return await _baseService.SendAsync<T>(new ApiRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = obj,
+                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/UserAPI/revoke"
+            });
         }
     }
 }

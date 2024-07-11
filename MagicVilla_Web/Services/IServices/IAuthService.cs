@@ -1,4 +1,5 @@
-﻿using MagicVilla_Web.Models.Dto;
+﻿using MagicVilla_VillaAPI.Models.Dto;
+using MagicVilla_Web.Models.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace MagicVilla_Web.Services.IServices
     {
         Task<T> LoginAsync<T>(LoginRequestDto objToCreate);
         Task<T> RegisterAsync<T>(RegisterationRequestDto objToCreate);
+        Task<T> LogoutAsync<T>(TokenDto obj);
     }
 }

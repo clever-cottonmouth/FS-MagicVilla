@@ -215,5 +215,19 @@ namespace MagicVilla_VillaAPI.Repository
             return _db.SaveChangesAsync();
         }
 
+        public async Task RevokeRefreshToken(TokenDto tokenDto)
+        {
+            var existingRefreshToken = await _db.RefreshTokens.FirstOrDefaultAsync(_ => _.Refresh_Token == tokenDto.RefreshToken);
+            if (existingRefreshToken == null) 
+            {
+                return;
+            }
+            var isTokenValid = GetAccessTokenData(tokenDto.AccessToken, existingRefreshToken.UserId, existingRefreshToken.JwtTokenId);
+            if (!isTokenValid)
+            {
+                return;
+            }
+            await MarkAllTokenInChainAsInvalid(existingRefreshToken.UserId, existingRefreshToken.JwtTokenId);
+        }
     }
 }
