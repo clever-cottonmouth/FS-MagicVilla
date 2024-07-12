@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -12,6 +13,11 @@ namespace MagicVilla_VillaAPI
 {
     public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     {
+        readonly IApiVersionDescriptionProvider provider;
+
+        public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider)=>this.provider = provider;
+        
+
         public void Configure(SwaggerGenOptions options)
         {
             // Include 'SecurityScheme' to use JWT Authentication
@@ -38,16 +44,15 @@ namespace MagicVilla_VillaAPI
         { jwtSecurityScheme, Array.Empty<string>() }
     });
 
-            options.SwaggerDoc("v1", new OpenApiInfo
+
+            foreach(var desc in provider.ApiVersionDescriptions)
             {
-                Version = "v1",
-                Title = " Magic Villa"
-            });
-            options.SwaggerDoc("v2", new OpenApiInfo
-            {
-                Version = "v2",
-                Title = " Magic Villa"
-            });
+                options.SwaggerDoc(desc.GroupName, new OpenApiInfo
+                {
+                    Version = desc.ApiVersion.ToString(),
+                    Title = $"Magic Villa{desc.ApiVersion}"
+                });
+            }
         }
     }
 }
